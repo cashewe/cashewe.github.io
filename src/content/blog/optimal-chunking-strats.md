@@ -2,8 +2,9 @@
 title: 'Mathematically Optimal Chunking Strategy'
 description: 'The boys crave accurate chunks, your man delivers them'
 pubDate: 'May 04 2026'
-heroImage: '../../assets/blog-placeholder-3.jpg'
+heroImage: '../../../public/diagrams/mathematically_optimised_chunking__board_setup.jpg'
 ---
+
 *This blog post is designed to introduce the core ideas behind the [`darn`](https://github.com/cashewe/darn) package. It is worth inspecting the source code for yourself to suplement any gaps in understanding.*
 
 There are [many](https://www.pinecone.io/learn/chunking-strategies/) documented chunking strategies for [RAG](https://en.wikipedia.org/wiki/Retrieval-augmented_generation) systems readily available online. These can range from incredibly simple character (or token) limits, to rules-based splitting strategies, or even LLM backed *semantic chunking* methods. From my experience however, none of these methods provide the production-worthy 'one-size-fits-all' approach that they claim to:
@@ -48,17 +49,17 @@ This will turn each character in our text into a possible candidate split-point 
 
 To illustrate the means of finding the coveted 'least bad' solution, imagine a world where the characters in your text are spaces on a monopoly board, and the cost to land on them are representative of the summed punishment we mentioned prior.
 
-<illustrative image>
+![setup](/diagrams/mathematically_optimised_chunking__board_setup.jpg)
 
 You decide to cheat the game by using weighted dice, but given the dice only has 6 sides, what are the best possible tiles to land on to minimise the total charge? This is an example of the common "bounded [shortest path](https://en.wikipedia.org/wiki/Shortest_path_problem)" - we want to take the route round the board that incurs the lowest cost but are contrained by a 'bound' of 6 (the number of sides on our dice).
 
 whilst it may seem intuitive to always pick the cheapest tile within range (this is a so-called ['greedy'](https://en.wikipedia.org/wiki/Greedy_algorithm) strategy), in practice taking what seems optimal in a given roll may well end up incuring a higher total cost in future!
 
-<illustrative image>
+![greedy](/diagrams/mathematically_optimised_chunking__greedy_vs_optimal.jpg)
 
 in order to avoid this scenario, we must encode into our decision making process some understanding of the future impacts of our present actions. Mathematically, this can be done as simply as starting at the end and working backwards, calculating the minimum possible cost to exit the board from each tile.
 
-<illustrative image>
+![reverse calc](/diagrams/mathematically_optimised_chunking__optimal_cost.jpg)
 
 From here, the problem effectively solves itself - we simply select the tile in range of our dice with the lowest 'minimum cost to exit' and follow the path we used to arrive at that cost back up the board. Performing this same process on our text, we select the set of chunk boundaries that collectively form the 'least bad' solution - no one chunk is optimised in a vaccum. 
 
