@@ -1,0 +1,336 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+const assets = [
+	{
+		id: 'slop_genie',
+		title: 'Slop Genie',
+		path: '/gifs/slop_genie.gif',
+		description:
+			'This was made originally to illustrate the poor quality of ai responses without careful context - a wish for quality lands me coated in slop. unfortunately i made it as like ten 1 second clips? so it ended up having to be stitched together in "cleo editor", hence the obnoxious watermark :('
+	},
+	{
+		id: 'snakeoil',
+		title: 'Snake Oil',
+		path: '/gifs/snakeoil.gif',
+		description:
+			'After dealing with a near endless line of charlatans i felt compelled to make this one...'
+	}
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Assets" description="A gallery of GIFs and assets you can use for free xoxo" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Assets</h1>
+			<p>
+				I'll be occasionally sharing short animations or images etc... here for those who are interested. if you make use of any, please do reference me as the source!
+			</p>
+
+			<section class="viewer" aria-label="Asset gallery" data-count={assets.length}>
+				<div class="viewer-stage">
+					<button type="button" class="nav-arrow nav-prev" aria-label="Previous GIF">&#8592;</button>
+
+					<div class="viewer-frame">
+						{assets.map((asset, i) => (
+							<img
+								src={asset.path}
+								alt={asset.title}
+								class="viewer-gif"
+								data-index={i}
+								style={i === 0 ? '' : 'display:none;'}
+							/>
+						))}
+					</div>
+
+					<button type="button" class="nav-arrow nav-next" aria-label="Next GIF">&#8594;</button>
+				</div>
+
+				<div class="viewer-dots" role="tablist" aria-label="Choose GIF">
+					{assets.map((asset, i) => (
+						<button
+							type="button"
+							class="dot"
+							class:list={{ active: i === 0 }}
+							data-index={i}
+							aria-label={`Show ${asset.title}`}
+							aria-selected={i === 0 ? 'true' : 'false'}
+						></button>
+					))}
+				</div>
+
+				<article class="viewer-details">
+					<h2 class="viewer-title">{assets[0].title}</h2>
+
+					<div class="copy-row">
+						<button type="button" class="copy-gif-button" data-asset-title={assets[0].title} data-asset-path={assets[0].path}>
+							Copy GIF
+						</button>
+						<p class="copy-feedback" aria-live="polite"></p>
+					</div>
+
+					<label for="active-description">Description</label>
+					<textarea id="active-description" class="asset-description" rows="6"></textarea>
+				</article>
+
+				{assets.map((asset) => (
+					<textarea class="description-source" data-asset-id={asset.id} hidden>{asset.description}</textarea>
+				))}
+			</section>
+		</main>
+		<Footer />
+
+		<script define:vars={{ assets }}>
+			const storageKey = 'assets-page-descriptions';
+
+			const gifs = Array.from(document.querySelectorAll('.viewer-gif'));
+			const dots = Array.from(document.querySelectorAll('.dot'));
+			const prevBtn = document.querySelector('.nav-prev');
+			const nextBtn = document.querySelector('.nav-next');
+			const titleEl = document.querySelector('.viewer-title');
+			const descriptionEl = document.querySelector('#active-description');
+			const copyButton = document.querySelector('.copy-gif-button');
+			const feedbackEl = document.querySelector('.copy-feedback');
+			const descriptionSources = Array.from(document.querySelectorAll('.description-source'));
+
+			let currentIndex = 0;
+
+			const getStoredDescriptions = () => {
+				try {
+					return JSON.parse(window.localStorage.getItem(storageKey) || '{}');
+				} catch {
+					return {};
+				}
+			};
+
+			const storedDescriptions = getStoredDescriptions();
+
+			const descriptionFor = (id) => {
+				if (storedDescriptions[id]) return storedDescriptions[id];
+				const source = descriptionSources.find((el) => el.dataset.assetId === id);
+				return source ? source.value : '';
+			};
+
+			const saveDescription = (id, value) => {
+				const values = getStoredDescriptions();
+				values[id] = value;
+				window.localStorage.setItem(storageKey, JSON.stringify(values));
+			};
+
+			const render = (index) => {
+				currentIndex = (index + assets.length) % assets.length;
+				const asset = assets[currentIndex];
+
+				gifs.forEach((img, i) => {
+					img.style.display = i === currentIndex ? '' : 'none';
+				});
+
+				dots.forEach((dot, i) => {
+					dot.classList.toggle('active', i === currentIndex);
+					dot.setAttribute('aria-selected', i === currentIndex ? 'true' : 'false');
+				});
+
+				titleEl.textContent = asset.title;
+				descriptionEl.value = descriptionFor(asset.id);
+				descriptionEl.dataset.assetId = asset.id;
+				copyButton.dataset.assetTitle = asset.title;
+				copyButton.dataset.assetPath = asset.path;
+				feedbackEl.textContent = '';
+			};
+
+			prevBtn.addEventListener('click', () => {
+				render(currentIndex - 1);
+			});
+
+			nextBtn.addEventListener('click', () => {
+				render(currentIndex + 1);
+			});
+
+			dots.forEach((dot) => {
+				dot.addEventListener('click', () => {
+					render(Number(dot.dataset.index));
+				});
+			});
+
+			descriptionEl.addEventListener('input', () => {
+				saveDescription(descriptionEl.dataset.assetId, descriptionEl.value);
+			});
+
+			copyButton.addEventListener('click', async () => {
+				const path = copyButton.dataset.assetPath || '';
+				const absoluteUrl = new URL(path, window.location.origin).href;
+
+				try {
+					const response = await fetch(path);
+					if (!response.ok) throw new Error('Unable to download image');
+					const blob = await response.blob();
+
+					try {
+						// Most browsers (Chrome included) only support image/png on the
+						// clipboard, so an animated GIF blob will throw here.
+						const clipboardItem = new ClipboardItem({ [blob.type || 'image/gif']: blob });
+						await navigator.clipboard.write([clipboardItem]);
+						feedbackEl.textContent = 'Copied GIF to clipboard.';
+						return;
+					} catch {
+						await navigator.clipboard.writeText(absoluteUrl);
+						feedbackEl.textContent =
+							"This browser can't copy animated GIFs directly, so I copied the link instead — paste it into Slack/Discord and it'll unfurl as the GIF.";
+						return;
+					}
+				} catch {
+					try {
+						await navigator.clipboard.writeText(absoluteUrl);
+						feedbackEl.textContent = 'Copied link to clipboard.';
+					} catch {
+						feedbackEl.textContent = 'Copy failed. Try again from a supported browser.';
+					}
+				}
+			});
+
+			render(0);
+		</script>
+	</body>
+</html>
+
+<style>
+	.viewer {
+		margin: 2rem 0;
+	}
+
+	.viewer-stage {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.viewer-frame {
+		flex: 1;
+		background: rgba(255, 255, 255, 0.8);
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 12px;
+		box-shadow: var(--box-shadow);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 320px;
+		overflow: hidden;
+	}
+
+	.viewer-gif {
+		width: 100%;
+		max-height: 70vh;
+		display: block;
+		object-fit: contain;
+	}
+
+	.nav-arrow {
+		flex-shrink: 0;
+		background: rgba(255, 255, 255, 0.8);
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 999px;
+		width: 2.75rem;
+		height: 2.75rem;
+		font-size: 1.25rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	.nav-arrow:hover {
+		background: var(--accent);
+		color: white;
+		border-color: var(--accent);
+	}
+
+	.viewer-dots {
+		display: flex;
+		justify-content: center;
+		gap: 0.5rem;
+		margin: 1rem 0;
+	}
+
+	.dot {
+		width: 0.6rem;
+		height: 0.6rem;
+		border-radius: 999px;
+		border: none;
+		background: rgb(var(--gray-light));
+		cursor: pointer;
+		padding: 0;
+	}
+
+	.dot.active {
+		background: var(--accent);
+	}
+
+	.viewer-details {
+		max-width: 640px;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.viewer-title {
+		margin-bottom: 0.75rem;
+	}
+
+	.copy-row {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.4rem;
+		margin-bottom: 1rem;
+	}
+
+	.asset-description {
+		width: 100%;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 8px;
+		padding: 0.75rem;
+		box-sizing: border-box;
+		font: inherit;
+		resize: vertical;
+		text-align: left;
+	}
+
+	.copy-gif-button {
+		background: var(--accent);
+		color: white;
+		border: none;
+		border-radius: 999px;
+		padding: 0.6rem 0.9rem;
+		cursor: pointer;
+	}
+
+	.copy-gif-button:hover {
+		background: var(--accent-dark);
+	}
+
+	.copy-feedback {
+		margin: 0;
+		font-size: 0.95rem;
+		min-height: 1.2em;
+	}
+
+	@media (max-width: 640px) {
+		.viewer-stage {
+			gap: 0.5rem;
+		}
+
+		.viewer-frame {
+			min-height: 220px;
+		}
+
+		.nav-arrow {
+			width: 2.25rem;
+			height: 2.25rem;
+			font-size: 1rem;
+		}
+	}
+</style>
