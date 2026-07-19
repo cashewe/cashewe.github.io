@@ -1,3 +1,10 @@
+---
+title: 'Intro to RAG'
+description: 'We all sit puzzled wondering wtf is RAG anyways?'
+pubDate: 'August 01 2026'
+heroImage: '../../../public/diagrams/mathematically_optimised_chunking.jpg'
+---
+
 you may have heard of the concept of localised chatbots before - for instance as a means of automatically answering customer queries about your business. you may even have heard the term RAG (or `retrieval augmented generation`) before... but what does it actually mean? and how does it work? 
 
 in this short article I'll explain the underlying technology in simple terms and demonstrate how, when leveraged properly, RAG can allow your AI systems to become more than simple chatbots; embedding business knoweldge deep into your processes.
@@ -10,7 +17,7 @@ but how does your business fit into that? The answer, frankly, is it doesn't.
 
 the AI is generally knowledgeable, but has no means of knowing anything particular about local topics. unfortunately, since the AI isn't 'thinking' but simply providing the statistically most likely answer to your questions, its not capable of telling you what it does or doesn't 'know' and instead gives a confidentially wrong response. you can keep rubbing the lamp, but the genie will only ever pretend to answer your wishes.
 
-<public/slop_genie.gif>
+![genie](/gifs/slop_genie.gif)
 
 A suggestion I often see is to try training AI models on your local information (a method called 'fine-tuning'). whilst *possible* this is typically not that *desirable* as:
 
