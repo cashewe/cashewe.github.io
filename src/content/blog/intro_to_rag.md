@@ -4,48 +4,43 @@ description: 'We all sit puzzled wondering wtf is RAG anyways?'
 pubDate: 'August 01 2026'
 heroImage: '../../../public/diagrams/mathematically_optimised_chunking.jpg'
 ---
-*in this short article I'll explain the underlying technology in simple terms and demonstrate how, when leveraged properly, RAG can allow your AI systems to become more than simple chatbots; embedding business knoweldge deep into your processes.*
+*In this short article I'll explain the underlying technology in simple terms and demonstrate how, when leveraged properly, RAG can allow your AI systems to become more than simple chatbots; embedding business knowledge deep into your processes.*
 
 ![man by bookshelves with a malevolent genie behind him]()
 
 # Context
 
-you may have heard of the concept of localised chatbots before - for instance as a means of automatically answering customer queries about your business. you may even have heard the term RAG (or `retrieval augmented generation`) before... but what does it actually mean? and how does it work? 
+You may have heard of the concept of localised chatbots before - for instance as a means of automatically answering customer queries about your business. You may even have heard the term RAG (or `retrieval augmented generation`) before... But what does it actually mean? And how does it work? 
 
-somewhere far from here (or maybe very close, reader discerning) the worlds top engineers are spending [**trillions**](https://www.gartner.com/en/newsroom/press-releases/2026-1-15-gartner-says-worldwide-ai-spending-will-total-2-point-5-trillion-dollars-in-2026) of dollars producing new AI models.
+Somewhere far from here (or maybe very close, reader discerning) the worlds top engineers are spending [**billions**](https://www.gartner.com/en/newsroom/press-releases/2026-1-15-gartner-says-worldwide-ai-spending-will-total-2-point-5-trillion-dollars-in-2026) of dollars producing new AI models.
 
 The models learn to write coherent sentences by studying text written by people from all across the world and all throughout history - which unsurprisingly leads the AI to develop an impressive grasp of language, as well as a deep understanding of *popular* topics and the *latest hotness*. 
 
-but how does your business fit into that? The answer, frankly, is it doesn't.
+But how does your business fit into that? The answer, frankly, is it doesn't.
 
 ![business doesnt fit, we are sad]()
 
-the AI is generally knowledgeable, but has no means of knowing any organisation specific information. unfortunately, since the AI isn't 'thinking' but simply providing the statistically most likely answer to your questions, its not capable of telling you what it does or doesn't 'know' and instead gives a confidentially wrong response. you can keep rubbing the lamp, but the genie will only ever pretend to answer your wishes.
+The AI is generally knowledgeable, but has no means of knowing any organisation specific information. Unfortunately, since the AI isn't 'thinking' but simply providing the statistically most likely answer to your questions, its not capable of telling you what it does or doesn't 'know' and instead gives a confidentially wrong response. You can keep rubbing the lamp, but the genie will only ever pretend to answer your wishes.
 
 ![genie](/gifs/slop_genie.gif)
 
-A suggestion I often see is to try training AI models on your local information (a method called 'fine-tuning'). whilst *possible* this is typically not *desirable* as:
+A suggestion I often see is to try training AI models on your local information (a method called 'fine-tuning'). Whilst *possible* this is typically not *desirable* as:
 
-- it is incredibly expensive
-- it can cause you to 'overfit' on local data
-- it isn't reusable
+- It is incredibly expensive
+- It can cause you to 'overfit' on local data
+- It provides patterns for speech rather than reliable facts for answers
 
 Using the RAG technique, we will instead intercept our incoming queries, search through our data for grounding information, and inject it into our question before it hits the AI to provide the relevant context to the model. Think of it as a discovery layer on top of your non-structured data (then, think of *the value* of such a layer 🤑).
 
-<details>
-<summary><strong>Beyond chatbots</strong></summary>
-
-The value can go beyond simple chatbots to becoming a powerful foundational capability for an AI first business. It could help ai agents to understand regulatory rules in the country they operate in, the subtle differences between two products or the architecture of your global estate. RAG can enable [**Data as a Product**](https://www.ibm.com/think/topics/data-as-a-product) thinking to extend to the unstructured data that more often defines day to day corporate life.
-
-</details>
+That value can go beyond simple chatbots to becoming a powerful foundational capability for an AI first business. It could help AI agents to understand regulatory rules in the country they operate in, the subtle differences between two products or the architecture of your global estate. RAG can enable [**Data as a Product**](https://www.ibm.com/think/topics/data-as-a-product) thinking to extend to the unstructured data that more often defines day to day corporate life.
 
 
 # How does it work?
 
 At its simplest, we can break the RAG technique down into four simple steps:
 
-1. ahead of time, we split our text into smaller, more focused 'chunks' of information
-2. when a question arrives, we 'retrieve' the chunks that seem most relevant
+1. Ahead of time, we split our text into smaller, more focused 'chunks' of information
+2. When a question arrives, we 'retrieve' the chunks that seem most relevant
 3. We 'rehydrate' our context with the retrieved chunks
 4. we allow the AI to 'generate' a response.
 
@@ -63,7 +58,7 @@ When it comes to looking through digital text, current trends have largely settl
 
 ![coordinates for words]()
 
-when our RAG system receives a query, we will make an embedding out of this query with the same method we used to create embeddings out of the underlying text data - ending up with coordinates representing the question and all the underlying data. from here, we can use some simple geometry to find the text which is nearest the input question, or in other words to find the underlying data whose meaning is deemed most similar to the input query. 
+When our RAG system receives a query, we will make an embedding out of this query with the same method we used to create embeddings out of the underlying text data - ending up with coordinates representing the question and all the underlying data. From here, we can use some simple geometry to find the text which is nearest the input question, or in other words to find the underlying data whose meaning is deemed most similar to the input query. 
 
 Importantly, an embedding represents the whole text all at once, not a sentence by sentence reading. This means its value is heightened if the text is concentrated on a single topic, and if each *bit of text* is of relatively even size. For this reason it is beneficial to split our data up into smaller chunks that ideally represent single topics of information, which leads us back to step 1.
 
@@ -79,7 +74,7 @@ Several enhancements or more advanced chunking methods exist (i.e. ['Mathematica
 
 With our data carefully chunked, our vector search based retrieval is able to find the most semantically similar chunks. From here, we want to provide the AI model with the data it needs to answer our initial question (a process called 'rehydration'). In the simplest possible system we'll pass it the top outputs from the retrieval stage, however in practice this will often not suffice.
 
-For example, we may find that simlarity and usefulness arent the same metric i.e. here we can see chunks about motorbikes, pedal bikes and Gino D'Acampos grandmother are all equally similar to a question on riding in the cycle lane: 
+For example, we may find that similarity and usefulness aren't the same metric i.e. here we can see chunks about motorbikes, pedal bikes and Gino D'Acampos grandmother are all equally similar to a question on riding in the cycle lane: 
 
 ![types of bike]()
 
@@ -89,11 +84,11 @@ It is common to use a 'reranker' model here as a judge - to filter the retrieved
 
 Once we're happy with our rehydration strategy, we can pass the new context consisting of:
 
-- the question
-- the relevant data from our documents
-- a prompt explaining we need an answer grounded in the data we have provided
+- The question
+- The relevant data from our documents
+- A prompt explaining we need an answer grounded in the data we have provided
 
-on to the AI model, which can now provide us with an answer to our initial question at a fraction of the cost and time compared to training our own.
+On to the AI model, which can now provide us with an answer to our initial question at a fraction of the cost and time compared to training our own.
 
 # Conclusion
 
