@@ -4,7 +4,7 @@ description: 'We all sit puzzled wondering wtf is RAG anyways?'
 pubDate: 'August 01 2026'
 heroImage: '../../../public/diagrams/mathematically_optimised_chunking.jpg'
 ---
-*In this short article I'll explain the underlying technology in simple terms and demonstrate how, when leveraged properly, RAG can allow your AI systems to become more than simple chatbots; embedding business knowledge deep into your processes.*
+*RAG is a process in which we intercept questions for AI and wrap them in relevant business context. In this short article I'll explain the underlying methodology and demonstrate how, when leveraged properly, it can allow your AI systems to become more than simple chatbots; embedding business knowledge deep into your processes.*
 
 ![man by bookshelves with a malevolent genie behind him]()
 
@@ -18,22 +18,19 @@ The models learn to write coherent sentences by studying text written by people 
 
 But how does your business fit into that? The answer, frankly, is it doesn't.
 
-![business doesnt fit, we are sad]()
-
-The AI is generally knowledgeable, but has no means of knowing any organisation specific information. Unfortunately, since the AI isn't 'thinking' but simply providing the statistically most likely answer to your questions, its not capable of telling you what it does or doesn't 'know' and instead gives a confidentially wrong response. You can keep rubbing the lamp, but the genie will only ever pretend to answer your wishes.
+The AI is generally knowledgeable, but has no means of knowing any organisation specific information. Unfortunately, since the AI isn't 'thinking' but simply providing the statistically most likely answer to your questions, its not capable of discerning correctness and instead gives a confidentially wrong response. You can keep rubbing the lamp, but the genie will only ever pretend to answer your wishes.
 
 ![genie](/gifs/slop_genie.gif)
 
-A suggestion I often see is to try training AI models on your local information (a method called 'fine-tuning'). Whilst *possible* this is typically not *desirable* as:
+A suggestion I often see is to try training AI models on your local information (a method called ['fine-tuning'](https://www.ibm.com/think/topics/fine-tuning)). Whilst *possible* this is typically not *desirable* as:
 
 - It is incredibly expensive
 - It can cause you to 'overfit' on local data
-- It provides patterns for speech rather than reliable facts for answers
+- It is very hard to keep up to date with an evolving dataset
 
-Using the RAG technique, we will instead intercept our incoming queries, search through our data for grounding information, and inject it into our question before it hits the AI to provide the relevant context to the model. Think of it as a discovery layer on top of your non-structured data (then, think of *the value* of such a layer 🤑).
+Using the RAG technique, we will instead intercept our incoming queries, search through our data for grounding information, and inject it into our question before it hits the AI to provide the relevant context to the model. Think of it as a discovery layer on top of your non-structured data.
 
-That value can go beyond simple chatbots to becoming a powerful foundational capability for an AI first business. It could help AI agents to understand regulatory rules in the country they operate in, the subtle differences between two products or the architecture of your global estate. RAG can enable [**Data as a Product**](https://www.ibm.com/think/topics/data-as-a-product) thinking to extend to the unstructured data that more often defines day to day corporate life.
-
+Then, think of *the value* of such a layer 🤑
 
 # How does it work?
 
@@ -66,9 +63,7 @@ Importantly, an embedding represents the whole text all at once, not a sentence 
 
 ## 1: chunking the text
 
-Now that we have established the reason *why* we chunk, let's look at quite *how* we might do this. A simple default technique might be to simply split the input text every 'N' [tokens](https://blogs.nvidia.com/blog/ai-tokens-explained/) (tokens are how AI *sees* things). 
-
-Several enhancements or more advanced chunking methods exist (i.e. ['Mathematically Optimised Chunking Strategy'](https://cashewe.github.io/blog/optimal-chunking-strats/)), but these are often *contextually* useful rather than universally valuable so should be considered on a case-by-case basis, typically being better modeled as improvements to a base system rather than first pass approaches.
+Now that we have established the reason *why* we chunk, let's look at quite *how* we might do this. A simple default technique might be to simply split the input text every 'N' [tokens](https://blogs.nvidia.com/blog/ai-tokens-explained/) (tokens are how AI *sees* things). When 'N' is kept small, this should satisfy our needs for concentrated text, but know that many [more complex chunking methods](https://cashewe.github.io/blog/optimal-chunking-strats/) exist for more specialist needs.
 
 ## 3: Rehydrating the context
 
