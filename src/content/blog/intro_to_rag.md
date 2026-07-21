@@ -2,11 +2,9 @@
 title: 'Intro to RAG'
 description: 'We all sit puzzled wondering wtf is RAG anyways?'
 pubDate: 'August 01 2026'
-heroImage: '../../../public/diagrams/mathematically_optimised_chunking.jpg'
+heroImage: '../../../public/diagrams/intro_to_rag.jpg'
 ---
 *RAG is a process in which we intercept questions for AI and wrap them in relevant business context. In this short article I'll explain the underlying methodology and demonstrate how, when leveraged properly, it can allow your AI systems to become more than simple chatbots; embedding business knowledge deep into your processes.*
-
-![man by bookshelves with a malevolent genie behind him]()
 
 # Context
 
@@ -51,15 +49,15 @@ In your daily life you'll be familiar with many ways to discover information.
 - On e commerce websites we use free text search matching techniques to find relevant products. 
 - In libraries we have whatever the heck the 'Dewey Decimal System' actually is. 
 
-When it comes to looking through digital text, current trends have largely settled on a technique known as ['vector search'](https://www.ibm.com/think/topics/vector-search). In it, we assign a list of numeric values to text based on the 'semantic meaning' of the text - we call this list an 'embedding' because it *embeds* the meaning of the underlying text into something that conspicuously resembles a set of coordinates i.e.: 
+When it comes to looking through digital text, current trends have largely settled on a technique known as ['vector search'](https://www.ibm.com/think/topics/vector-search). In it, we assign a list of numeric values to text based on the 'semantic meaning' of the text - we call this list an 'embedding' because it *embeds* the meaning of the underlying text into something that conspicuously resembles a set of coordinates: 
 
-![coordinates for words]()
+![coordinates for words](/diagrams/intro_to_rag__coordinate_mapping.jpg)
 
 When our RAG system receives a query, we will make an embedding out of this query with the same method we used to create embeddings out of the underlying text data - ending up with coordinates representing the question and all the underlying data. From here, we can use some simple geometry to find the text which is nearest the input question, or in other words to find the underlying data whose meaning is deemed most similar to the input query. 
 
 Importantly, an embedding represents the whole text all at once, not a sentence by sentence reading. This means its value is heightened if the text is concentrated on a single topic, and if each *bit of text* is of relatively even size. For this reason it is beneficial to split our data up into smaller chunks that ideally represent single topics of information, which leads us back to step 1.
 
-![graph showing how more waffle lowers the percentage match between two options]()
+![dilute signal](/diagrams/intro_to_rag__dilute_signal.jpg)
 
 ## 1: chunking the text
 
@@ -69,9 +67,9 @@ Now that we have established the reason *why* we chunk, let's look at quite *how
 
 With our data carefully chunked, our vector search based retrieval is able to find the most semantically similar chunks. From here, we want to provide the AI model with the data it needs to answer our initial question (a process called 'rehydration'). In the simplest possible system we'll pass it the top outputs from the retrieval stage, however in practice this will often not suffice.
 
-For example, we may find that similarity and usefulness aren't the same metric i.e. here we can see chunks about motorbikes, pedal bikes and Gino D'Acampos grandmother are all equally similar to a question on riding in the cycle lane: 
+For example, we may find that similarity and usefulness aren't the same metric i.e. here we can see chunks about motorbikes, pedal bikes and [Gino D'Acampos grandmother](https://www.youtube.com/watch?v=A-RfHC91Ewc) are all equally similar to a question on riding in the cycle lane: 
 
-![types of bike]()
+![types of bike](/diagrams/intro_to_rag__bike_conundrum.jpg)
 
 It is common to use a 'reranker' model here as a judge - to filter the retrieved chunks by likely usefulness. This helps avoid confusing the AI in the generative step that follows.
 
@@ -89,7 +87,7 @@ On to the AI model, which can now provide us with an answer to our initial quest
 
 And that's RAG in a nutshell! At its heart its a very simple idea - expose the information containing the answer directly to the AI with a queriable interface. Now finally you can feel free to rub that lamp to your hearts content, safe in the knowledge that this time at least, the genie has done his homework.
 
-![studious genie]()
+![studious genie](/diagrams/intro_to_rag__studious_genie.jpg)
 
 cheers,
 
