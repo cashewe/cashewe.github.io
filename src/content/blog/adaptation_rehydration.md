@@ -6,15 +6,18 @@ heroImage: '../../../public/diagrams/intro_to_rag.jpg'
 ---
 *I was once fit for purpose, but that purpose changed*
 
-I've been musing on an idea for a while now, but it wasn't until I rewatched the movie '[adaptation](https://www.imdb.com/title/tt0268126/)' (in which a struggling screenwriter attempts to adapt a non-fiction book about flowers into a movie, but finds the endeavour falls into chaos as the line between his own life and the story he is writing blurs) that I felt that missing piece click into place and found the word i needed to get the point across: 
+## The Best Verb is also a Noun
 
+I've often found it hard to articulate when or why we should transition between representations of data. Just where does the inertia come from? It was while watching the movie '[adaptation](https://www.imdb.com/title/tt0268126/)' that i found myself hit with a sudden clarity on why i've found the whole thing so hard to specify. It hadn't dawned on me that my choice of words could so heavily affect the way i think. That "transition" is a verb without causal justification; too open ended to truly be useful. Or that "adaptation" comes pre-baked with an implication that ones *constraints have changed*, and that this particular transition is in fact an act of optimisation:
 
 > Adaptation / adapˈtāSHən /
 >> - [uncountable, countable] the action or process of changing something, or of being changed, to suit a new purpose or situation
 >
 >> - [countable] a film, television drama or play that is based on a particular book or play but has been changed to suit the new medium
 
-The movie is, by the way, completely nuts - somehow managing to be both a film about adaptation, as well as in its own right a successful adaptation of the book - not an exact one mind you, but one that preserves the underlying ideas and fits them better to the medium of film.
+The movie is, by the way, completely nuts - somehow managing to be both a film about the *act* of adaptation and a successful adaptation of a book. The balance is achieved masterfully by taking the underlying themes of the original book and reworking them to fit the medium of film, rather than attempting to directly copy the book onto the screen.
+
+## Adapting the Idea
 
 The concept of adaptation is, in as many words, the beating heart of Data, AI and Machine Learning Engineering. Starting at the start, take for instance the task of EDA - popularly including creating notebooks full of vibrant graphs. Here, the need to adapt is clear - the data tables were a useful abstraction when creating the neccessary views, however they become a poor fit vs a simple plot once story telling becomes our goal.
 
