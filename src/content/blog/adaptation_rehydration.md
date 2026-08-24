@@ -33,8 +33,6 @@ Without action, key design decisions will therefore remain as consequences of pr
 
 Imagine if we hadnt made these decisions! Your EDA notebook would be *even less* legible...
 
-<confused man cartoon>
-
 If your experiencing friction and struggling to see whether or not its time to adapt, you may find use in this simple framework:
 
 for the problematic representation:
@@ -51,12 +49,8 @@ Using this framework, we can identify a common key failure in RAG system design
 
 ## The framework
 
-<details>
-<summary>what is a chunk?</summary>
-In AI systems, the typical unit of source text is the 'chunk' - a short section of continuous prose extracted from a full document. these 'chunks' are passed between systems in order to provide critical context to the AI model making the choices in the system.
-</details>
-
-chunks are selected for their fitness in "vector search". Small, thematically monotone pieces of information make embeddings less noisy and therefore tend to improve the hit rate of questions. why then do they continue to turn up further into the system? what value does an arbitrary length section of information have from an AI's point of view, aside from convenience, that a longer more contextually rich alternative misses out on? To really push the issue here, take a look at this example:
+It is common to experience some friction at the last step of the RAG process, often known as the 'hydration' step. here we pass the most relevant information we've previously identified to our LLM and ask it to answer the initial question based on what was passed. sometimes this works a treat! in real scenarios though, its not uncommon to experience half-answers; in which the AI is able to correctly provide only part of the truth
+For instance, take a look at this example:
 
 ```
 Q: where do we do business
@@ -66,7 +60,7 @@ Q: where do we do business
     - Spain
 ```
 
-seems fine right? but what if I showed you some of the surrounding text that the chunk - by chance - didn't include:
+seems fine right? but what if I showed you some of the full source text:
 
 ```
 Due to local laws, for customers under the age of 16 or over the age of 65, we cannot do business in France.
@@ -79,63 +73,38 @@ In most other cases, we legally do business in:
 For customers with a valid EU passport we can also legally do business in other European territories, such as Poland or Germany.
 ```
 
-A more appropriate structure here would be more contextually rich, including as much information as necessary to convey the point. The chunk here isn't just not ideal, it actively harms the system. Design decisions are ultimately an encoding of constraints, and so carrying a decision forwards implicitly carries those constraints as well - even if we know longer have to abide by them
+Suddenly we see just how wrong the original answer was. the mechanism driving this is the use of 'chunks' - a small continuous piece of text that can have somewhat arbitrary boundaries that leave us with an incomplete picture of the truth.
 
-### A note to the thirsty
+going back to our framework, we can see:
 
-The problem of adding information back in to our system post vector search is generally known as 'context rehydration' and there are several promising options for engineers to pursue - each with their own strengths and weaknesses to consider. In my experience when presented with a smorgasbord of options is best to pick the simplest which meets your needs, as this will often better allow you to revisit the decision in future as new requirements emerge. In this case, I have settled on rehydrating based on markdown sections in the text, which adds an extra benefit in that markdown is a universal language with many upstream and downstream consumers already choosing to use it. To exemplify this, see the following dummy document:
+1. the chunk is selected to optimise the vector search, which benefits from short, hyperfocused prose.
+2. vector search is built on embeddings - which become noisy when multiple topics are considered. short chunks are therefore more likely to yield better embeddings by virtue of simply being short.
+3. at the point of hydration, length is only a consideration in that we have to pay more for longer inputs - there is no longer a strict need for such short chunks
+4. the new constraint is the need for complete context in order to avoid the AI doing material harm to our customers or our business by making incomplete or incorrect statements
+5. we should adapt to include expanded context.
 
-```
-# my document
-this is my document
+based on this, we can see that constraints have meaningfully changed and that we should be adapting to suit the new system. The chunk here isn't just not ideal, it actively harms us!
 
-## part 1
-this section is the first
+### The Chunk
 
-## part 2
-this section is the second and contains several subsections such as
-
-### part 2a
-this one
-
-### part 2b
-and this one
-```
-
-imagine that the highlighted portion is our chunk. my default behaviour is:
-
-- include the whole section/s our chunk is contained in
-- include its direct parent section
-- include the titles of all sections in the document (keeping these helps protect us from situations where the underlying document uses subsections as a pseudo-list for instance.) 
-
-for example, the rehydration of the highlighted chunk will look like this:
+One way to adapt to the new needs would be to simply provide more of the surrounding text from the source document. As an example, I have found reasonable success in simple - medium complexity usecases in simply expanding to include the whole 'section' in the markdown text we are processing i.e.:
 
 ```
-# my document
-...
-
-## part 1
-...
-
-## part 2
-this section is the second and contains several subsections such as
-
-### part 2a
-this one
-
-### part 2b
-...
-
+# Section
+blah blah <here is my chunk> blah blah
 ```
+
+If I'm willing to pay a little more, I find including the parent section can really help cement the context in certain more heirarchical documents, and that including the headings of all the sibling sections can help to catch scenarios where sub sections are used as a form of list. 
+
 If this strategy appeals to you, I've collected my implementation into a python package [`adran`](github.com/cashewe/adran) which can be installed from pypi with your favourite package manager.
+
+This strategy meets its limit when dealing with documents that cross-reference often - in these scenarios some kind of entity-relationship expansion is likely more performant.
 
 ## survival of the fittest
 
-not all adaptations happen within the system. sometimes a decision that made perfect sense at the time can in retrospect be seen to be outdated, and not just due to obsolete technology. For instance, a choice to use a PaaS system can greatly accelerate a team wanting to get new technologies such as ML or AI into production, but that team will often inevitably find with time that the simplicity they once benefitted from now holds them back from achieving true depth of skill. revisiting our decisions and recontextualising them after the fact must be done regularly both within the system and within the context of the evolving world our team and technology stack exist in if we are to form truly high performing teams.
+not all adaptations happen within the system. sometimes a decision that made perfect sense at the time can in retrospect be seen to be outdated, and not just due to obsolete technology. For instance, a choice to use a PaaS system can greatly accelerate a team wanting to get new technologies such as ML or AI into production,but that team will often inevitably find with time that the simplicity they once benefitted from now holds them back from achieving true depth of skill. This doesnt make the initial choice a mistake, it merely shows us that times change and sometimes its just time to move on. revisiting our decisions and recontextualising them after the fact is an important part of growth for systems, teams and individuals alike.
 
-After all that I'd be remiss if I didn't acknowledge the fact that I too must adapt. as i have adapted the movie which adapted the book. as i have adapted the chunk which adapted the text.
-
-The industry around us is also evolving at what feels like break-neck speeds. Understanding which approaches, tools or philosophy's that we take for granted as best practice were formed based on constraints which no longer exist or at the very least no longer exist in the form they once did has become a critical part of staying relevant in an AI accelerated industry.
+After all that I'd be remiss if I didn't acknowledge the fact that I too must adapt. as i have adapted the movie which adapted the book. as i have adapted the chunk which adapted the text. There was a time when updating old processes or building simple tools was enough for me, but as i have aged I've found myself yearning for more at just the time the industry itself seems to be moving away from the need (or perhaps more accurately, *the want*) for such technical specialties. If i am to find the place i want for myself in the future, i must move forwards but not past the old me, taking the creativity and foundational understanding in new more strategic directions. A dyslexic man now voluntarily writing articles is just one step in this process.
 
 ## conclusion
 
@@ -144,8 +113,10 @@ The industry around us is also evolving at what feels like break-neck speeds. Un
 >
 >> - [uncountable, countable] the action or process of changing something, or of being changed, to suit a new purpose or situation
 
-This article was going to be about constantly challenging data structures throughout a system. Not challenging in the sense that a child is challenging to deal with when deprived of treats. Rather, challenging in the sense that one might challenge an authority figure when deprived of treats as a child. It was going to challenge readers to challenge structures more regularly and question decisions constantly, using the concept of chunks in rag pipelines to ground the abstract into reality. unfortunately i must confess, i couldn't quite figure out how to tie it all together. Readers would surely be left asking "why must i challenge these ideas? and when and how often again in the future?" by reframing the problem as one of observation of changing constraints, a need to adapt to these constraints becomes a fairly obvious outcome. and when should you adapt? well, probably at least as often as your lack of fitness for purpose causes genuine friction, and perhaps a bit more so than even that. None of which is to say that we should go and change everything at every available opportunity. Chesterton's fence may feel less relevant to a world in which a genuine answer as to why something exists might be 'the AI decided it should', but that shouldn't stop us from asking in the first place.
 
+This article was going to be about constantly challenging data structures throughout a system. It was going to challenge readers to challenge structures more regularly and question decisions constantly, using the concept of chunks in rag pipelines to ground the abstract into reality. unfortunately for the longest time i couldn't quite figure out how to tie it all together. Readers would surely be left asking "why must i challenge these ideas? and when and how often again in the future?" by reframing the problem as one of observation of changing constraints, a need to adapt to these constraints becomes a fairly obvious outcome. and when should you adapt? well, probably at least as often as your lack of fitness for purpose causes genuine friction, and perhaps a bit more so than even that. None of which is to say that we should go and change everything at every available opportunity. Chesterton's fence may feel less relevant to a world in which a genuine answer as to why something exists might just be 'because the AI decided it should', but that shouldn't stop us from asking in the first place.
+
+and on that, i leave you to adapt these adapted ideas (or not) into your own works.
 
 cheers,
 
