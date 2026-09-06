@@ -2,7 +2,7 @@
 title: 'Agentic Coding Article'
 description: 'Are agents good actually'
 pubDate: 'September 07 2026'
-heroImage: '../../../public/diagrams/intro_to_rag.jpg'
+heroImage: '../../../public/diagrams/agentic_coding.jpg'
 ---
 
 A few months back (or a lifetime in AI terms), a friend of mine told me he had begun building 'SaaS products' with claude. "you can't deny people are making money doing this" he'd said. "people made money selling cumrocket tokens, charlatans grifting is a sign of the times not the technology" I'd replied.
