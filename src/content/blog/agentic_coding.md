@@ -9,21 +9,34 @@ A few months back (or a lifetime in AI terms), a friend of mine told me he had b
 
 but in those few months since something has changed.
 
-The group of people claiming agentic workflows are "good now actually" has expanded beyond that one friend to include many that i know as technically gifted. In my team, quantity of work produced has noticeably and measurably increased in ways that can only really be justified by AI usage (although I'll happily argue *quality* has not improved in that time frame). In honesty, the FOMO had slowly been creeping in for a while when i noticed codex were offering a free months trial. It seemed like now was finally time for me to whet my toes if not throw myself wholeheartedly into the deep end. 
+The group of people claiming agentic workflows are "good now actually" has expanded beyond that one friend to include many that i know as technically gifted. In my team, quantity of work produced has noticeably and measurably increased in ways that can only really be justified by AI usage (although I'll happily argue *quality* has not improved in that time frame).
+In honesty, the FOMO had slowly been creeping in for a while when i noticed codex were offering a free months trial. It seemed like now was finally time for me to whet my toes if not throw myself wholeheartedly into the deep end. 
 
-My goal: figure out if agentic workflows are able to *programme*, or just able to code.
+My goal: figure out if agentic workflows are able to *engineer*, or just able to code.
 
 What follows is an account of my first experience using agentic coding, so for context, a bit about me:
 
+## Johnno, in a nutshell
+
+![fact file](/diagrams/agentic_coding/fact_file.jpg)
+
 - I have been building professional software in the data science and AI space for around 7 years, and coding in python specifically for around 10. like many others I have also taken a recent fancy to rust.
-- I have been using AI as a coding *helper* since the first public release of chatGPT, and would consider AI usage a core part of my workflow at this point - via both chat interfaces and GitHub copilot, but never through full agentic platforms such as codex, cursor or claude code.
-- I have been in the role of technical lead for around 2 and a half years, meaning a fair amount of my time is already spent strategically planning rather than coding (although i do still do plenty of hands on development too).
+- I have been using AI as a coding *helper* since the first public release of chatGPT, and would consider AI usage a core part of my workflow at this point - via both chat interfaces and GitHub copilot, but never through full agentic platforms.
+- I have been in the role of technical lead for around 2 and a half years, meaning a fair amount of my time is already spent strategically planning rather than coding - which should be a natural fit for agentic development.
+
+## The product
 
 For this experiment I've decided to realise an idea I've had vaguely in my mind for a year or so by now but have never quite gotten round to building. its the sort of idea which is easy to convince yourself is well fleshed out and considered for as long as it remains in your head, but that I'm quite sure when push comes to shove all that confidence will turn out to have been mostly vanity. *you know the type*. 
 
-In short, we will be building a JSON-configurable routing tool, which will allow users to pass messages between APIs using strategies such as conditional gates, fan-outs or random selection. This tool will be useful to me for building out API gateways, for instance by letting me pick which model to score with based on some categoric variable. To help users understand if they've configured it correctly, it will ship with a couple of CLI tools that will validate their JSON configurations, intended for use in CI pipelines. Since I've found AI to be pretty waffly in the past, I'll add here that I'd expect the whole thing to take somewhere between 3k and 5k LoC, including tests if I were building it myself.
+In short, we will be building a JSON-configurable routing tool, which will allow users to pass messages between APIs using strategies such as conditional gates, fan-outs or random selection. This tool will be useful to me for building out API gateways, for instance by letting me pick which model to score with based on some categoric variable.
+To help users understand if they've configured it correctly, it will ship with a couple of CLI tools that will validate their JSON configurations and visualise their routing, intended for use in CI pipelines.
 
-* I don't want the tool itself to become the focus of the article going forwards, so if its of interest to you, find it pip installable from pypi [here]() and the code the agent eventually landed on [here](https://github.com/cashewe/camau).
+<details>
+<summary>the solution</summary>
+
+I don't want the tool itself to become the focus of the article going forwards, so if its of interest to you, find it pip installable from pypi [here]() and the code the agent eventually landed on [here](https://github.com/cashewe/camau).
+
+</details>
 
 I've picked this one from my backlog for a few reasons (which may or may not end up being relevant):
 
@@ -31,6 +44,8 @@ I've picked this one from my backlog for a few reasons (which may or may not end
 2. It sits in a goldilocks zone of being complex enough to not be trivial whilst remaining within my own abilities to build such that i expect to be able to fairly critique the outcome. *can the agent manage the complexity of the problem?*
 3. since its routing API calls it'll need to make use of async, something I've often found AI to be pretty crap at in the past *can the agent handle complex 'coding' tasks?*
 4. since it's designed as a JSON configurable reusable package, the AI has to create an ergonomic python interface, a CI compatible CLI interface *and* a human readable JSON schema to configure it with, again both things I've had issues getting out of AI models in the past. *Can the agent design with the needs of multiple different types of customer in mind?*
+
+Since I've found AI to be pretty waffly in the past, I'll add here that I'd expect the whole thing to take somewhere between 3k and 5k LoC (excluding tests) if I were building it myself, and I'd ideally like the AI to land somewhere in this range.
 
 In the name of giving the agentic processes an honest go, I've ignored the self-proclaimed vibe-coders and looked for existing engineers ideas on best practices, and ended up finding a couple of popular methods:
 
