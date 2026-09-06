@@ -1,5 +1,5 @@
 ---
-title: 'Agentic Coding Article'
+title: 'Testing Agentic Coding Skills'
 description: 'Are agents good actually'
 pubDate: 'September 07 2026'
 heroImage: '../../../public/diagrams/agentic_coding/hero.jpg'
@@ -30,6 +30,8 @@ For this experiment I've decided to realise an idea I've had vaguely in my mind 
 
 In short, we will be building a JSON-configurable routing tool, which will allow users to pass messages between APIs using strategies such as conditional gates, fan-outs or random selection. This tool will be useful to me for building out API gateways, for instance by letting me pick which model to score with based on some categoric variable.
 To help users understand if they've configured it correctly, it will ship with a couple of CLI tools that will validate their JSON configurations and visualise their routing, intended for use in CI pipelines.
+
+![camau](/diagrams/agentic_coding/front_page.jpg)
 
 <details>
 <summary>the solution</summary>
