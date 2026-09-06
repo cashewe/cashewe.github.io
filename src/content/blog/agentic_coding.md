@@ -2,14 +2,14 @@
 title: 'Agentic Coding Article'
 description: 'Are agents good actually'
 pubDate: 'September 07 2026'
-heroImage: '../../../public/diagrams/agentic_coding.jpg'
+heroImage: '../../../public/diagrams/agentic_coding/hero.jpg'
 ---
 
 A few months back (or a lifetime in AI terms), a friend of mine told me he had begun building 'SaaS products' with claude. "you can't deny people are making money doing this" he'd said. "people made money selling cumrocket tokens, charlatans grifting is a sign of the times not the technology" I'd replied.
 
 but in those few months since something has changed.
 
-The group of people claiming agentic workflows are "good now actually" has expanded beyond that one friend to include many that i know as technically gifted. In my team, quantity of work produced has noticeably and measurably increased in ways that can only really be justified by AI usage (although I'll happily argue *quality* has not improved in that time frame). FOMO had slowly been creeping in for a while when i noticed codex were offering a free months trial. It seemed like now was finally time for me to whet my toes if not throw myself wholeheartedly into the deep end. 
+The group of people claiming agentic workflows are "good now actually" has expanded beyond that one friend to include many that i know as technically gifted. In my team, quantity of work produced has noticeably and measurably increased in ways that can only really be justified by AI usage (although I'll happily argue *quality* has not improved in that time frame). In honesty, the FOMO had slowly been creeping in for a while when i noticed codex were offering a free months trial. It seemed like now was finally time for me to whet my toes if not throw myself wholeheartedly into the deep end. 
 
 My goal: figure out if agentic workflows are able to *programme*, or just able to code.
 
@@ -93,7 +93,7 @@ As for the skills workflow, To be honest I've not come away terribly impressed w
 
 The grilling, whilst not a terrible idea on paper, seems to put the wrong problems first. user requirements can and will change, but the domain they exist in will likely remain relatively static - if i had to wager I'd guess it would've benefited greatly to spend more time thinking about the code and the domain in this phase. This supprised me as one of Pococks more popular youtube videos includes a book recommendation for "philosophy of software design" - which contains an entire chapter stressing that the smallest unit of change should be abstractions, not features.
 
-For now at least, I'll be using my AI as a rubber duck rather than a George Foreman.
+For now at least, I'll continue using my AI as a rubber duck rather than a George Foreman.
 
 cheers,
 

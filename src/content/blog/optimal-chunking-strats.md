@@ -2,7 +2,7 @@
 title: 'Mathematically Optimal Chunking Strategy'
 description: 'The boys crave accurate chunks, your man delivers them'
 pubDate: 'May 04 2026'
-heroImage: '../../../public/diagrams/mathematically_optimised_chunking.jpg'
+heroImage: '../../../public/diagrams/optimal-chunking-strats/hero.jpg'
 ---
 
 *In this blog I will introduce the core ideas behind the [`darn`](https://github.com/cashewe/darn) package - designed to avoid degraded trust in RAG systems caused by lost context in chunks*
@@ -28,11 +28,11 @@ After some thinking on possible shapes for such a solution (and admittedly also 
 
 At its core, the idea behind the tool is to invert the traditional chunking logic such that rather than blindly demanding:
 
-![split command](/diagrams/mathematically_optimised_chunking_split_here.jpg)
+![split command](/diagrams/optimal-chunking-strats/split_here.jpg)
 
 we instead pose the question:
 
-![split question](/diagrams/mathematically_optimised_chunking_where_to_split.jpg)
+![split question](/diagrams/optimal-chunking-strats/where_to_split.jpg)
 
 Though this distinction may seem arbitrary, asking rather than acting is a better reflection of the confidence we have in our knowledge of the underlying collection of documents (be real, you arent intimately familiar with *all* 3,000 `.docx` files in that directory are you?). By accepting that we will be searching not for the 'correct' place to split, but rather the 'least bad', we can form an architecture that is 'closer' to the ambiguous reality of the problem. This will ensure our solution remains flexible to the unique idiosyncrasies in the documents.
 
@@ -48,19 +48,19 @@ In `darn`, we apply these punishments to the structures found in [markdown text]
 
 By taking the sum of the punishments at each candidate splitting location, we can quantify how 'bad' a decision it would be to split there. This problem can be collapsed into a form of the common "bounded [shortest path](https://en.wikipedia.org/wiki/Shortest_path_problem)" problem in which we try to find the 'shortest' (for us, 'least-punished') route from A to Z in a given number of steps or less, which has a canonical mathematical solution, displayed below:
 
-![DAG](/diagrams/mathematically_optimised_chunking__shortest_path.jpg)
+![DAG](/diagrams/optimal-chunking-strats/shortest_path.jpg)
 
 To illustrate the means of finding the 'least bad' solution, imagine a world where the characters in your text are spaces on a monopoly board, the cost to land on them are representative of the summed punishment we mentioned prior, and we roll a dice to determine how far we can travel each turn.
 
-![setup](/diagrams/mathematically_optimised_chunking__board_setup.jpg)
+![setup](/diagrams/optimal-chunking-strats/board_setup.jpg)
 
 Given the dice only has 6 sides, what are the best possible spaces to land on to minimise the total cost? Whilst it may seem intuitive to always aim for the cheapest space within range (this is a so-called ['greedy'](https://en.wikipedia.org/wiki/Greedy_algorithm) approach), in practice taking what seems optimal in a given roll may well end up incurring a higher total cost in future!
 
-![greedy](/diagrams/mathematically_optimised_chunking__greedy_vs_optimal.jpg)
+![greedy](/diagrams/optimal-chunking-strats/greedy_vs_optimal.jpg)
 
 in order to avoid this scenario, we must encode into our decision making process some understanding of the future impacts of our present actions. Mathematically, this can be done as simply as starting at the end and working backwards, calculating the minimum possible cost to exit the board from each space in reverse. 
 
-![reverse calc](/diagrams/mathematically_optimised_chunking__optimal_cost.jpg)
+![reverse calc](/diagrams/optimal-chunking-strats/optimal_cost.jpg)
 
 By taking this reversed approach to decision making, we are able to learn what the future impacts of our current choices will be, as they are encoded as costs into our rolling window of 'reachable' spaces. From here, the problem solves itself - we simply select the space in range of our dice with the lowest 'minimum cost to exit' and follow the path we used to arrive at that cost back up the board (in computer science, this is known as [dynamic programming](https://www.geeksforgeeks.org/dsa/dynamic-programming/)). Performing this same process on our text, we select the set of chunk boundaries (the 'path') that *collectively* form the 'least bad' solution - no one chunk is optimised in a vacuum. 
 
